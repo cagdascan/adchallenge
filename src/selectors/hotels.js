@@ -1,14 +1,11 @@
 import { createSelector } from 'reselect';
-import { makeTree } from '../utils/tree';
 
 const hotelsListSelector = (state) => state.getIn(['hotels', 'list']);
 const hotelsLoadingSelector = (state) => state.getIn(['hotels', 'loading']);
 
-const makeHierarchicalHotelsData = () => createSelector(
+const makeHotelsData = () => createSelector(
   hotelsListSelector,
-  (state) => {
-    return makeTree(state);
-  }
+  (state) => Array.isArray(state) ? state : []
 );
 
 const makeHotelsLoadingData = () => createSelector(
@@ -17,6 +14,6 @@ const makeHotelsLoadingData = () => createSelector(
 );
 
 export {
-  makeHotelsLoadingData,
-  makeHierarchicalHotelsData 
+  makeHotelsData,
+  makeHotelsLoadingData
 };

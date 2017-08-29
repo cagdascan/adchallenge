@@ -3,25 +3,38 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 
-import {
-  makeHierarchicalHotelsData,
-  makeHotelsLoadingData
-} from "../../selectors/hotels";
+import { fetchHotels } from "../../actions/hotels";
+
+import { makeHotelsData, makeHotelsLoadingData } from "../../selectors/hotels";
 
 import {
   Table,
   TableBody,
   TableHeader,
   TableHeaderColumn,
-  TableRow,
-  TableRowColumn
+  TableRow
 } from "material-ui/Table";
 
 import Progress from "../Progress";
-import Row from "./row";
-import './style.css';
+import DataRow from "./row";
 
 class DataTable extends Component {
+  componentWillMount() {
+    this.props.fetchHotels();
+  }
+
+  renderRows(items) {
+    if (items) {
+      return items.map((item, idx) => {
+        return [
+          <DataRow key={idx} item={item} />,
+          item.expanded && this.renderRows(item.children)
+        ];
+      });
+    }
+    return null;
+  }
+
   render() {
     const { loading, hotels } = this.props;
 
@@ -29,27 +42,22 @@ class DataTable extends Component {
       return <Progress />;
     }
 
-    const rows = hotels.map((item, idx) => {
-      return (
-        <Row 
-          item={item}
-          key={idx}
-        />
-      );
-    });
-
     return (
-      <table>
-        <thead>  
-          <tr>
-            <td>ID</td>
-            <td>Phone</td>
-            <td>City</td>
-            <td>Name</td>
-          </tr>
-        </thead>
-        {rows}
-      </table>
+      <Table selectable={false}>
+        <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+          <TableRow>
+            <TableHeaderColumn>Expand/Collapse</TableHeaderColumn>
+            <TableHeaderColumn>ID</TableHeaderColumn>
+            <TableHeaderColumn>Phone</TableHeaderColumn>
+            <TableHeaderColumn>City</TableHeaderColumn>
+            <TableHeaderColumn>Name</TableHeaderColumn>
+            <TableHeaderColumn>Delete</TableHeaderColumn>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {this.renderRows(hotels)}
+        </TableBody>
+      </Table>
     );
   }
 }
@@ -59,9 +67,13 @@ DataTable.propTypes = {
   loading: PropTypes.bool
 };
 
+const mapDispatchToProps = dispatch => ({
+  fetchHotels: () => dispatch(fetchHotels())
+});
+
 const mapStateToProps = createStructuredSelector({
-  hotels: makeHierarchicalHotelsData(),
+  hotels: makeHotelsData(),
   loading: makeHotelsLoadingData()
 });
 
-export default connect(mapStateToProps)(DataTable);
+export default connect(mapStateToProps, mapDispatchToProps)(DataTable);

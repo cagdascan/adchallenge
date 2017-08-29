@@ -3,3 +3,7 @@ export const API_URL = 'https://gist.githubusercontent.com/burakcan/ca77e8fc11a1
 export const LOAD_HOTELS = 'LOAD_HOTELS ';
 export const LOAD_HOTELS_SUCCESS = 'LOAD_HOTELS_SUCCESS';
 export const LOAD_HOTELS_FAIL = 'LOAD_HOTELS_FAIL';
+
+export const EXPAND_ELEMENT = 'EXPAND_ELEMENT'; 
+export const COLLAPSE_ELEMENT = 'COLLAPSE_ELEMENT'; 
+export const DELETE_ELEMENT = 'DELETE_ELEMENT'; 

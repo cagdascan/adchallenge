@@ -1,9 +1,0 @@
-table {
-  width: 100%;
-}
-
-td, th {
-  width: 4rem;
-  height: 2rem;
-  border: 1px solid #ccc;
-}

@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "axios": "^0.16.2",
-    "fetch-jsonp": "^1.1.1",
     "immutable": "^3.8.1",
     "material-ui": "^0.19.0",
     "prop-types": "^15.5.10",

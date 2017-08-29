@@ -1,11 +1,15 @@
+// convert a flat list to a tree
 const makeTree = list => {
-  const dataMap = list.reduce((map, node) => {
+  const newList = list.slice(0);
+
+  const dataMap = newList.reduce((map, node) => {
     map[node.ID] = node;
     return map;
   }, {});
 
   const tree = [];
-  list.forEach((node) => {
+
+  newList.forEach((node) => {
     const parent = dataMap[node.parentID];
     if (parent) {
       (parent.children || (parent.children = []))
@@ -15,39 +19,37 @@ const makeTree = list => {
     }
   });
 
-  console.log(tree);
-
   return tree;
 };
 
-// const sort = list => {
-//   const unsorted = list;
-//   const sorted = [];
+// deep find and update in nested array of objects
+const deepUpdate = (array, id, key, value) => {
+  array.forEach(item => {
+    const obj = item;
+    if (obj.ID === id) {
+      obj[key] = value;
+    }
+    if (obj.children) {
+      deepUpdate(obj.children, id, key, value);
+    }
+  });
+};
 
-//   if (!sorted.length) {
-//     sorted.push(unsorted[0]);
-//     unsorted.splice(0, 1);
-//   }
+// deep find and delete tree branch
+const prune = (array, id) => {
+  array.forEach((item, idx) => {
+    const obj = item;
+    if (obj.ID === id) {
+      array.splice(idx, 1);
+    }
+    if (obj.children) {
+      prune(obj.children, id);
+    }
+  });
+};
 
-//   while (unsorted.length) {
-//     const lastEl = sorted[sorted.length - 1];
-
-//     if (unsorted.find((i) => i.parentID === lastEl.ID)) {
-//       const el = unsorted.find((i) => i.parentID === lastEl.ID);
-//       const index = unsorted.findIndex((i) => i.parentID === lastEl.ID);
-//       sorted.push(el);
-//       unsorted.splice(index, 1);
-//     } else {
-//       if ()
-//       const el = unsorted[0];
-//       sorted.push(el);
-//       unsorted.splice(0, 1);
-//     }
-//   }
-
-//   return sorted;
-// };
-
-export { 
-  makeTree
-}
+export {
+  makeTree,
+  deepUpdate,
+  prune
+};

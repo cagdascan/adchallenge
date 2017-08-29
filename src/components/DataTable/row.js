@@ -1,51 +1,66 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { TableRow, TableRowColumn } from "material-ui/Table";
+
+import DeleteButton from "../Buttons/deleteButton";
+import ExpandButton from "../Buttons/expandButton";
+import CollapseButton from "../Buttons/collapseButton";
+import { expandElement, collapseElement, deleteElement } from "../../actions/hotels";
 
 class DataRow extends Component {
-  renderChildren(children) {
-    if (!children || !children.length) {
-      return null;
-    }
+  handleCollapse(id) {
+    this.props.collapseElement(id);
+  }
 
-    const rowList = children.map((i, idx) => (
-      <DataRow item={i} key={idx} />
-    ));
+  handleExpand(id) {
+    this.props.expandElement(id);
+  }
 
-    return (
-      <tr>
-        <td colSpan="12">
-          <div>
-            <table>
-              {rowList}
-            </table>
-          </div>
-        </td>
-      </tr>
-    )
+  handleDelete(id) {
+    this.props.deleteElement(id);
   }
 
   render() {
-    const { item } = this.props;
+    const { item: { ID, Phone, City, Name, expanded, children } } = this.props;
 
     return (
-      <tbody>
-        <tr>
-          <td>
-            {item.ID}
-          </td>
-          <td>
-            {item.Phone}
-          </td>
-          <td>
-            {item.City}
-          </td>
-          <td>
-            {item.Name}
-          </td>
-        </tr>
-        {this.renderChildren(item.children)}
-      </tbody>
+      <TableRow hoverable>
+        <TableRowColumn>
+          {children && !expanded && <ExpandButton onClick={() => this.handleExpand(ID)} />}
+          {children && expanded && <CollapseButton onClick={() => this.handleCollapse(ID)} />}
+        </TableRowColumn>
+        <TableRowColumn>
+          {ID}
+        </TableRowColumn>
+        <TableRowColumn>
+          {Phone}
+        </TableRowColumn>
+        <TableRowColumn>
+          {City}
+        </TableRowColumn>
+        <TableRowColumn>
+          {Name}
+        </TableRowColumn>
+        <TableRowColumn>
+          <DeleteButton onClick={() => this.handleDelete(ID)} />
+        </TableRowColumn>
+      </TableRow>
     );
   }
 }
 
-export default DataRow;
+DataRow.propTypes = {
+  item: PropTypes.object,
+  expandElement: PropTypes.func,
+  collapseElement: PropTypes.func,
+  deleteElement: PropTypes.func
+};
+
+const mapDispatchToProps = dispatch => ({
+  expandElement: (id) => dispatch(expandElement(id)),
+  collapseElement: (id) => dispatch(collapseElement(id)),
+  deleteElement: (id) => dispatch(deleteElement(id))
+});
+
+export default connect(null, mapDispatchToProps)(DataRow);
