@@ -33,6 +33,7 @@ const deepUpdate = (array, id, key, value) => {
       deepUpdate(obj.children, id, key, value);
     }
   });
+  return array;
 };
 
 // deep find and delete tree branch
@@ -46,6 +47,7 @@ const prune = (array, id) => {
       prune(obj.children, id);
     }
   });
+  return array;
 };
 
 export {
